@@ -6,13 +6,13 @@ import java.io.FileReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Random;
+import java.util.Scanner;
 
 public class CavazosExample {
 
     public static void main(String[] args) {
         String fileName = "src\\main\\java\\com\\example\\commands.json";
 
-        System.out.println("Reading from: " + fileName); // Print the file path
 
         // Read commands from the JSON file
         JSONArray commandJSONArray = readArray(fileName);
@@ -23,15 +23,43 @@ public class CavazosExample {
         }
 
         String[] commandArray = getCommandArray(commandJSONArray);
+        Scanner scanner = new Scanner(System.in);
 
+ while (true) {
+     System.out.println("\n----- General Cavazos Command Menu -----");
+     System.out.println("L: List all commands");
+     System.out.println("5: Issue 5 random commands");
+     System.out.println("Q: Quit");
+     System.out.print("Enter your choice: ");
+
+     String choice = scanner.nextLine().toUpperCase();
+
+     switch (choice) {
+         case "L":
+             System.out.println("\n----- List of all commands -----");
+             print(commandArray);
+             break;
+         case "5":
+             System.out.println("\n----- Issuing 5 random commands from General Cavazos -----");
+             randomCommand(commandArray, 5);
+             break;
+         case "Q":
+             System.out.println("Exiting...");
+             scanner.close();
+             return;
+         default:
+             System.out.println("Invalid choice. Please try again.");
+     }
+ }
         // Print list of all commands
-        System.out.println("----- List of all commands -----");
-        print(commandArray);
+        // System.out.println("----- List of all commands -----");
+        // print(commandArray);
 
         // Issue 5 random commands
-        System.out.println("----- Issuing 5 random commands from General Cavazos -----");
-        randomCommand(commandArray, 5);
-                        //e
+        // System.out.println("----- Issuing 5 random commands from General Cavazos
+        // -----");
+        // randomCommand(commandArray, 5);
+
     }
 
     // Method to read JSON array from file
@@ -47,14 +75,16 @@ public class CavazosExample {
         } catch (org.json.simple.parser.ParseException e) {
             System.err.println("Error: Invalid JSON format in file: " + fileName);
         }
-        return new JSONArray(); // Return an empty array on error
+        // Return an empty array on error
+        return new JSONArray();
     }
 
     // Randomly issue commands from General Cavazos
     public static void randomCommand(String[] commandArray, int numCommand) {
         Random rand = new Random();
         if (numCommand > commandArray.length) {
-            numCommand = commandArray.length; // Adjust to the maximum available commands
+            // Adjust to the maximum available commands
+            numCommand = commandArray.length;
         }
         System.out.printf("Number\tCommand\n");
         System.out.printf("------\t---------------\n");
