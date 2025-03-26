@@ -28,22 +28,22 @@ public class CavazosExample {
  while (true) {
      System.out.println("\n----- General Cavazos Command Menu -----");
      System.out.println("L: List all commands");
-     System.out.println("5: Issue 5 random commands");
+     System.out.println("I: Issue a random commands");
      System.out.println("Q: Quit");
      System.out.print("Enter your choice: ");
 
-     String choice = scanner.nextLine().toUpperCase();
+     String choice = scanner.nextLine().toLowerCase();
 
      switch (choice) {
-         case "L":
+         case "l":
              System.out.println("\n----- List of all commands -----");
              print(commandArray);
              break;
-         case "5":
-             System.out.println("\n----- Issuing 5 random commands from General Cavazos -----");
-             randomCommand(commandArray, 5);
+         case "i":
+             System.out.println("\n----- Issuing a command from General Cavazos -----");
+             randomCommand(commandArray, 1);
              break;
-         case "Q":
+         case "q":
              System.out.println("Exiting...");
              scanner.close();
              return;
@@ -86,11 +86,12 @@ public class CavazosExample {
             // Adjust to the maximum available commands
             numCommand = commandArray.length;
         }
-        System.out.printf("Number\tCommand\n");
-        System.out.printf("------\t---------------\n");
+        String issue = "[Command Issued]";
         for (int i = 0; i < numCommand; i++) {
             int randIndex = rand.nextInt(commandArray.length);
-            System.out.printf("%04d\t%s\n", i, commandArray[randIndex]);
+            String command = commandArray[randIndex];
+            System.out.printf(issue + "  " + command, i, commandArray[randIndex]);
+
         }
     }
 
