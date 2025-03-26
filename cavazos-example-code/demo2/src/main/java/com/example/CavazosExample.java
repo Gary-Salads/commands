@@ -26,12 +26,13 @@ public class CavazosExample {
         Scanner scanner = new Scanner(System.in);
 
  while (true) {
-     System.out.println("\n----- General Cavazos Command Menu -----");
+     System.out.println("\n----- General Cavazos Command Menu -----\n");
      System.out.println("L: List all commands");
      System.out.println("I: Issue a random commands");
      System.out.println("Q: Quit");
+     line(args);
      System.out.print("Enter your choice: ");
-
+     line(args);
      String choice = scanner.nextLine().toLowerCase();
 
      switch (choice) {
@@ -62,6 +63,10 @@ public class CavazosExample {
 
     }
 
+    public static void line(String[] args) {
+        System.out.println("\n-----------------------------------------");
+
+    }
     // Method to read JSON array from file
     public static JSONArray readArray(String fileName) {
         JSONParser parser = new JSONParser();
