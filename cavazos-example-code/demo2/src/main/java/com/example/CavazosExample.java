@@ -1,6 +1,7 @@
 package com.example;
 
 import org.json.simple.JSONArray;
+import java.util.Stack;
 import org.json.simple.parser.JSONParser;
 import java.io.FileReader;
 import java.io.FileNotFoundException;
@@ -24,47 +25,61 @@ public class CavazosExample {
 
         String[] commandArray = getCommandArray(commandJSONArray);
         Scanner scanner = new Scanner(System.in);
+        CommandStack commandStack = new CavazosExample().new CommandStack();
 
  while (true) {
-     System.out.println("\n----- General Cavazos Command Menu -----\n");
+     line(args);
+     System.out.println("----- General Cavazos Command Menu -----");
+     line(args);
      System.out.println("L: List all commands");
-     System.out.println("I: Issue a random commands");
+     System.out.println("I: Issue a random command");
+     System.out.println("R: Reissue Previous command");
+     System.out.println("U: Undo Previous command");
      System.out.println("Q: Quit");
      line(args);
      System.out.print("Enter your choice: ");
-     line(args);
      String choice = scanner.nextLine().toLowerCase();
 
      switch (choice) {
          case "l":
              System.out.println("\n----- List of all commands -----");
-             print(commandArray);
+             // Print each command with a number
+             for (int i = 0; i < commandArray.length; i++) {
+                 String listFormat = String.format("%02d", i + 1);
+                 System.out.println(listFormat + " " + commandArray[i]);
+             }
              break;
          case "i":
-             System.out.println("\n----- Issuing a command from General Cavazos -----");
-             randomCommand(commandArray, 1);
+             line(args);
+             String randomCommand = commandArray[new Random().nextInt(commandArray.length)];
+             // Add command to the stack
+             commandStack.executeCommand(randomCommand);
+             break;
+         case "u":
+             line(args);
+             commandStack.undo();
+             break;
+         case "r":
+             line(args);
+             commandStack.redo();
              break;
          case "q":
              System.out.println("Exiting...");
              scanner.close();
              return;
+
          default:
              System.out.println("Invalid choice. Please try again.");
+             break;
+
      }
  }
-        // Print list of all commands
-        // System.out.println("----- List of all commands -----");
-        // print(commandArray);
-
-        // Issue 5 random commands
-        // System.out.println("----- Issuing 5 random commands from General Cavazos
-        // -----");
-        // randomCommand(commandArray, 5);
 
     }
 
+    // Formatting line func.
     public static void line(String[] args) {
-        System.out.println("\n-----------------------------------------");
+        System.out.println("\n-----------------------------------------\n");
 
     }
     // Method to read JSON array from file
@@ -84,31 +99,6 @@ public class CavazosExample {
         return new JSONArray();
     }
 
-    // Randomly issue commands from General Cavazos
-    public static void randomCommand(String[] commandArray, int numCommand) {
-        Random rand = new Random();
-        if (numCommand > commandArray.length) {
-            // Adjust to the maximum available commands
-            numCommand = commandArray.length;
-        }
-        String issue = "[Command Issued]";
-        for (int i = 0; i < numCommand; i++) {
-            int randIndex = rand.nextInt(commandArray.length);
-            String command = commandArray[randIndex];
-            System.out.printf(issue + "  " + command, i, commandArray[randIndex]);
-
-        }
-    }
-
-    // Print command array
-    public static void print(String[] commandArray) {
-        System.out.printf("Number\tCommand\n");
-        System.out.printf("------\t---------------\n");
-        for (int i = 0; i < commandArray.length; i++) {
-            System.out.printf("%04d\t%s\n", i, commandArray[i]);
-        }
-    }
-
     // Get array of commands
     public static String[] getCommandArray(JSONArray commandArray) {
         String[] arr = new String[commandArray.size()];
@@ -119,5 +109,35 @@ public class CavazosExample {
             arr[i] = command;
         }
         return arr;
+    }
+
+    public class CommandStack {
+
+        private Stack<String> commands = new Stack<>();
+        String uiFlair = "[Command issued]  ";
+
+        public void executeCommand(String command) {
+            commands.push(command);
+            System.out.println(uiFlair + command);
+        }
+
+        public void redo() {
+            if (!commands.isEmpty()) {
+                String command = commands.peek();
+                executeCommand(command);
+            } else {
+                System.out.println("No commands to reissue.");
+            }
+        }
+
+        public void undo() {
+            if (!commands.isEmpty()) {
+                String command = commands.pop();
+                System.out.println(uiFlair + command + " *Order Cancelled*");
+            } else {
+                System.out.println("No commands to revoke.");
+            }
+        }
+
     }
 }
